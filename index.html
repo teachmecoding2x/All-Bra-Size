@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bra Size Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 450px; /* Reduced width */
+      margin: 40px auto; /* Reduced vertical margin */
+      background: #fff;
+      padding: 12px; /* Reduced padding */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      background-color: #4CAF50;
+      padding: 12px; /* Reduced padding */
+      margin: 0;
+      border-radius: 8px 8px 0 0;
+      font-size: 20px; /* Reduced font size */
+    }
+
+    label {
+      font-size: 13px; /* Reduced font size */
+      margin: 6px 0;
+      display: block;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 6px; /* Reduced padding */
+      margin: 4px 0 12px; /* Reduced margin */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px; /* Reduced font size */
+      height: 35px; /* Reduced input field height */
+    }
+
+    .output {
+      margin-top: 15px; /* Reduced margin */
+    }
+
+    .output p {
+      font-size: 14px; /* Reduced font size */
+    }
+
+    .output span {
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 6px 12px; /* Reduced padding */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px; /* Reduced font size */
+      margin-top: 8px; /* Reduced margin */
+      width: 100%; /* Make button full-width */
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bra Size Calculator</h1>
+    <label for="bust">Bust (in inches):</label>
+    <input type="number" id="bust" placeholder="Enter your bust measurement in inches">
+
+    <label for="underbust">Underbust (in inches):</label>
+    <input type="number" id="underbust" placeholder="Enter your underbust measurement in inches">
+
+    <label for="boobShape">Boob Shape:</label>
+    <select id="boobShape">
+      <option value="full">Full Bust</option>
+      <option value="flat">Flat Chest</option>
+      <option value="uneven">One Larger Than Other</option>
+      <option value="regular">Regular</option>
+    </select>
+
+    <label for="activity">Activity Type:</label>
+    <select id="activity">
+      <option value="workout">Workout</option>
+      <option value="regular">Everyday Wear</option>
+      <option value="party">Party Wear</option>
+    </select>
+
+    <label for="sensitivity">Sensitivity:</label>
+    <select id="sensitivity">
+      <option value="chafing">Chafing</option>
+      <option value="digging">Straps Digging In</option>
+      <option value="comfort">Comfortable Fit</option>
+    </select>
+
+    <label for="region">Select Region:</label>
+    <select id="region">
+      <option value="us">US</option>
+      <option value="uk">UK</option>
+      <option value="eu">EU</option>
+    </select>
+
+    <button onclick="calculateBraSize()">Calculate</button>
+
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    function calculateBraSize() {
+      // Get the input values
+      const bust = parseFloat(document.getElementById('bust').value);
+      const underbust = parseFloat(document.getElementById('underbust').value);
+      const region = document.getElementById('region').value;
+      const boobShape = document.getElementById('boobShape').value;
+      const activity = document.getElementById('activity').value;
+      const sensitivity = document.getElementById('sensitivity').value;
+
+      // Validate input
+      if (isNaN(bust) || isNaN(underbust)) {
+        alert('Please enter valid numbers for Bust and Underbust');
+        return;
+      }
+
+      // Calculate band size and cup size
+      let bandSize = Math.round(underbust);
+      let cupSize = bust - bandSize;
+
+      // Map cup size to a letter (A, B, C, D, etc.)
+      const cupMapping = ['A', 'B', 'C', 'D', 'DD/E', 'F', 'G'];
+
+      // Get the cup size letter, default to 'Unknown' if the size is out of range
+      let cupLetter = cupMapping[cupSize] || 'F';
+
+      // Region size conversion logic
+      let regionSize;
+      if (region === 'us') {
+        regionSize = `${bandSize} ${cupLetter}`;
+      } else if (region === 'uk') {
+        regionSize = `${bandSize - 4} ${cupLetter}`; // UK size conversion
+      } else if (region === 'eu') {
+        regionSize = `${bandSize + 10} ${cupLetter}`; // EU size conversion
+      }
+
+      // Output the results
+      let braType;
+      if (activity === 'workout') {
+        braType = 'Sports Bra';
+      } else if (activity === 'regular') {
+        braType = 'Everyday Bra'; // For regular use
+      } else {
+        braType = ''; // Leave blank if no suggestion
+      }
+
+      const sensitivityMessage = sensitivity === 'chafing' 
+        ? 'Look for soft fabrics like cotton.' 
+        : sensitivity === 'digging' 
+        ? 'Consider bras with padded straps.' 
+        : 'Choose bras with comfortable materials.';
+
+      document.getElementById('output').innerHTML = `
+        <p>Your Suggested Bra Size: <span>${regionSize}</span></p>
+        ${braType ? `<p>Suggested Bra Type: <span>${braType}</span></p>` : ''}
+        <p>Sensitivity Consideration: <span>${sensitivityMessage}</span></p>
+      `;
+    }
+  </script>
+</body>
+</html>
